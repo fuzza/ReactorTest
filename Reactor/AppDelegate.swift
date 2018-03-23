@@ -7,15 +7,24 @@
 //
 
 import UIKit
+import RxFlow
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-
+    let coordinator: Coordinator = Coordinator()
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        guard let window = window else { return false }
+        
+        let flow = SignupFlow(navigation: UINavigationController())
+        Flows.whenReady(flow1: flow) { nav in
+            window.rootViewController = nav
+        }
+        
+        coordinator.coordinate(flow: flow, withStepper: OneStepper(withSingleStep: SignupFlow.Steps.start))
+        window.makeKeyAndVisible()
         return true
     }
 
